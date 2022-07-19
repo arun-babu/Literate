@@ -44,7 +44,7 @@ Forked from : https://github.com/zyedidia/Literate
 
 Here is a trivial example of a literate program saved in the file `hello.lit`.
 
-For a full example of a literate program, please see [`examples/wc.lit`](https://github.com/zyedidia/Literate/blob/master/examples/wc.lit) which
+For a full example of a literate program, please see [`examples/wc.lit`](https://github.com/arun-babu/Literate/blob/master/examples/wc.lit) which
 is a literate implementation of the `wc` (word count) program found on Unix systems.
 You can find the compiled html [here](https://arun-babu.github.io/literate/examples/wc.html).
 
@@ -83,7 +83,7 @@ To compile this code simply run
 
 `$ lit hello.lit`
 
-Which generates [hello.c](https://zyedidia.github.io/literate/examples/hello.c) and [hello.html](https://arun-babu.github.io/literate/examples/hello.html).
+Which generates [hello.c](https://arun-babu.github.io/literate/examples/hello.c) and [hello.html](https://arun-babu.github.io/literate/examples/hello.html).
 
 You can also find this program in `examples/hello.lit`.
 
