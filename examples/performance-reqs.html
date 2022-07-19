@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>1.3. Performance Requirements</title>
+<script src=lit.js></script><link rel='stylesheet' href=lit.css><script src='https://cdnjs.cloudflare.com/ajax/libs/viz.js/1.8.0/viz-lite.js' integrity='sha384-Y3b3bsRCJjOlZTzayFzYDC2EWb8aWeRTquEpyeAgOiq2edmwWLgjwrxqEuqj/OGw' crossorigin='anonymous'></script><script src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.13.4/mermaid.min.js' integrity='sha384-5hHNvPeMrNH14oM3IcQofDoBhiclNK3g2+hnEinKzQ07C4AliMeVpnvxuiwEGpaO' crossorigin='anonymous'></script></head>
+<body onload="prettyPrint()">
+<div class=noprint style='position:fixed; padding:5px 0 0 5px;left:0;top:0'><a  style="float:left;text-decoration:none" class="chapter-nav" href="security-reqs.html"><h1 style='color:black'>&#9664;</h1></a><a  style="float:right;text-decoration:none" class="chapter-nav" href="hello.html"><h1 style='color:black'>&#9654;</h1></a><center><a class='chapter-nav'><h1 style='cursor:pointer' onclick="window.location='index.html'">&equiv;</h1></a></center></div><section>
+<h1>1.3 Performance Requirements</h1>
+<a name="1.3:1"><div class="section"><h4>1. Introduction</h4></a>
+<p>These are our perfromance requirements.
+</p>
+
+<br><a name='1.3:1:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title><strong class=code_title>reqs/performance.req</strong></span></h4><hr></center>
+<pre class="code_background prettyprint">
+[DOCUMENT]
+TITLE: Performance Requirements 
+
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  style='text-decoration:none' href="performance-reqs.html#1.3:1:2"><code>reqs/performance.req @ 1.3.1.2</code></a></li><li><a  style='text-decoration:none' href="performance-reqs.html#1.3:1:3"><code>reqs/performance.req @ 1.3.1.3</code></a></li></ol></blockquote>
+
+
+</div>
+
+<br><a name='1.3:1:2'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4><a style='text-decoration:none;color:blue;font-family:Monaco,"Lucida Console",monospace' href="performance-reqs.html#1.3:1:1"><span class=code_title><strong class=code_title>reqs/performance.req</strong></span> <font color=#008000>+=</font></a></h4><hr></center>
+<pre class="code_background prettyprint">
+[REQUIREMENT]
+UID: PREQ-001 
+TITLE: Show Hello World 
+STATEMENT: There should be a hello.c file 
+
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  style='text-decoration:none' href="performance-reqs.html#1.3:1:2"><code>reqs/performance.req @ 1.3.1.2<font color=red> (this block)</font></code></a></li><li><a  style='text-decoration:none' href="performance-reqs.html#1.3:1:3"><code>reqs/performance.req @ 1.3.1.3</code></a></li></ol></blockquote>
+
+
+</div>
+
+<br><a name='1.3:1:3'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4><a style='text-decoration:none;color:blue;font-family:Monaco,"Lucida Console",monospace' href="performance-reqs.html#1.3:1:1"><span class=code_title><strong class=code_title>reqs/performance.req</strong></span> <font color=#008000>+=</font></a></h4><hr></center>
+<pre class="code_background prettyprint">
+[REQUIREMENT]
+UID: PREQ-002
+REFS:
+- TYPE: File
+  VALUE: file.py
+TITLE: Whole file reference
+STATEMENT: This requirement references the file.py file.
+COMMENT: &gt;&gt;&gt;
+If the file.py contains a source range that is connected back to this
+requirement (REQ-002), the link becomes a link to the source range.
+&lt;&lt;&lt;
+
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  style='text-decoration:none' href="performance-reqs.html#1.3:1:2"><code>reqs/performance.req @ 1.3.1.2</code></a></li><li><a  style='text-decoration:none' href="performance-reqs.html#1.3:1:3"><code>reqs/performance.req @ 1.3.1.3<font color=red> (this block)</font></code></a></li></ol></blockquote>
+
+
+</div>
+
+<br><a name='1.3:1:4'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title><strong class=code_title>reqs/p-other-reqs.req</strong></span></h4><hr></center>
+<pre class="code_background prettyprint">
+[DOCUMENT]
+TITLE: Other PErromance Requirements 
+
+[REQUIREMENT]
+UID: POREQ-001 
+TITLE: Show word count 
+STATEMENT: There should be a wc.c file 
+
+[REQUIREMENT]
+UID: POREQ-002
+REFS:
+- TYPE: File
+  VALUE: file.py
+TITLE: Traceability 
+STATEMENT: This requirement references the file.py file.
+COMMENT: &gt;&gt;&gt;
+If the file.py contains a source range that is connected back to this
+requirement (REQ-002), the link becomes a link to the source range.
+&lt;&lt;&lt;
+
+</pre></div>
+
+
+
+</div>
+<p>End
+</p>
+
+</div>
+</body>

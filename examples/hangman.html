@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>4. Hangman</title>
+<script src=lit.js></script><link rel='stylesheet' href=lit.css><script src='https://cdnjs.cloudflare.com/ajax/libs/viz.js/1.8.0/viz-lite.js' integrity='sha384-Y3b3bsRCJjOlZTzayFzYDC2EWb8aWeRTquEpyeAgOiq2edmwWLgjwrxqEuqj/OGw' crossorigin='anonymous'></script><script src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.13.4/mermaid.min.js' integrity='sha384-5hHNvPeMrNH14oM3IcQofDoBhiclNK3g2+hnEinKzQ07C4AliMeVpnvxuiwEGpaO' crossorigin='anonymous'></script></head>
+<body onload="prettyPrint()">
+<div class=noprint style='position:fixed; padding:5px 0 0 5px;left:0;top:0'><a  style="float:left;text-decoration:none" class="chapter-nav" href="wc.html"><h1 style='color:black'>&#9664;</h1></a><a  style="float:right;text-decoration:none" class="chapter-nav" href="multiple_files.html"><h1 style='color:black'>&#9654;</h1></a><center><a class='chapter-nav'><h1 style='cursor:pointer' onclick="window.location='index.html'">&equiv;</h1></a></center></div><section>
+<h1>4. Hangman</h1>
+<hr><h4>Table of contents</h4><div style='line-height:1.5em'><ol><li><a style='color:#337ABF' href=#4:1>Introduction</a></li><li><a style='color:#337ABF' href=#4:2>The Setup</a></li><li><a style='color:#337ABF' href=#4:3>Getting User Input</a></li><li><a style='color:#337ABF' href=#4:4>Checking the User's Guess</a></li><li><a style='color:#337ABF' href=#4:5>Checking for Victory</a></li><li><a style='color:#337ABF' href=#4:6>Pretty Printing the Dashes</a></li><li><a style='color:#337ABF' href=#4:7>The End</a></li><li><a style='color:#337ABF' href=#4:8>Words</a></li><li><a style='color:#337ABF' href=#callgraph>Appendix : Call graph</a></li></ol></div><hr><a name="4:1"><div class="section"><h4>1. Introduction</h4></a>
+<p>This is a Hangman program. It lets you make guesses about which letters are in an unknown word. On the eighth incorrect guess you lose.
+The structure of the hangman program will look like this:
+</p>
+
+<br><a name='4:1:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title><strong class=code_title>hangman.py</strong></span></h4><hr></center>
+<pre class="code_background prettyprint">
+import random
+import sys
+
+print "Welcome to hangman!"
+
+<b><span class="nocode pln"><a class='nocode pln' style='text-decoration:none' href="hangman.html#4:2:1"><font color=maroon>&#9654;</font> 1<font color=crimson>.</font> <span class=code_title>Setup</span></span></b></a>
+
+lives_left = 8
+
+while lives_left &gt; 0:
+#
+<b><span class="nocode pln">    <a class='nocode pln' style='text-decoration:none' href="hangman.html#4:3:1"><font color=maroon>&#9654;</font> 2<font color=crimson>.</font> <span class=code_title>Take user input</span></span></b></a>
+<b><span class="nocode pln">    <a class='nocode pln' style='text-decoration:none' href="hangman.html#4:4:1"><font color=maroon>&#9654;</font> 3<font color=crimson>.</font> <span class=code_title>Check input</span></span></b></a>
+<b><span class="nocode pln">    <a class='nocode pln' style='text-decoration:none' href="hangman.html#4:5:1"><font color=maroon>&#9654;</font> 4<font color=crimson>.</font> <span class=code_title>Check win</span></span></b></a>
+#
+
+<b><span class="nocode pln"><a class='nocode pln' style='text-decoration:none' href="hangman.html#4:7:1"><font color=maroon>&#9654;</font> 5<font color=crimson>.</font> <span class=code_title>End</span></span></b></a>
+
+<b><span class="nocode pln"><a class='nocode pln' style='text-decoration:none' href="multiple_files.html#5:1:1" target=_blank ><font color=maroon>&#9654;</font> 6<font color=crimson>.</font> <span class=code_title><font color=#28B463>Multiple Files</font> <font color=#34495E>/</font> Reused Code</span></span></b></a>
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  style='text-decoration:none' href="hangman.html#4:1:2"><code>hangman.py @ 4.1.2</code></a></li><li><a  target=_blank  style='text-decoration:none' href="test.html#6:1:1"><code><font color=#28B463>Testing</font> <font color=#34495E>/</font> hangman.py @ 6.1.1</code></a></li></ol></blockquote>
+
+
+</div>
+
+<br><a name='4:1:2'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4><a style='text-decoration:none;color:blue;font-family:Monaco,"Lucida Console",monospace' href="hangman.html#4:1:1"><span class=code_title><strong class=code_title>hangman.py</strong></span> <font color=#008000>+=</font></a></h4><hr></center>
+<pre class="code_background prettyprint">
+# some comments
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  style='text-decoration:none' href="hangman.html#4:1:2"><code>hangman.py @ 4.1.2<font color=red> (this block)</font></code></a></li><li><a  target=_blank  style='text-decoration:none' href="test.html#6:1:1"><code><font color=#28B463>Testing</font> <font color=#34495E>/</font> hangman.py @ 6.1.1</code></a></li></ol></blockquote>
+
+
+</div>
+
+</div>
+<a name="4:2"><div class="section"><h4>2. The Setup</h4></a>
+<p>First, we have the computer come up with a secret word which it chooses randomly from a list of words read from a text file.
+</p>
+
+<br><a name='4:2:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Setup</span></h4><hr></center>
+<pre class="code_background prettyprint">
+words = open("words.txt").read().split()
+secret_word = random.choice(words)
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  style='text-decoration:none' href="hangman.html#4:2:2"><code>Setup @ 4.2.2</code></a></li></ol></blockquote>
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="hangman.html#4:1:1"><code>hangman.py @ 4.1.1</code></a></li><li><a  target=_blank  style='text-decoration:none' href="test.html#6:1:2"><code><font color=#28B463>Testing</font> <font color=#34495E>/</font> test.py @ 6.1.2</code></a></li></ol></blockquote>
+</div>
+<p>Next we initialize the variable to hold the dashes.
+</p>
+
+<br><a name='4:2:2'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4><a style='text-decoration:none;color:blue;font-family:Monaco,"Lucida Console",monospace' href="hangman.html#4:2:1"><span class=code_title>Setup</span> <font color=#008000>+=</font></a></h4><hr></center>
+<pre class="code_background prettyprint">
+dashes = []
+for i in range(0, len(secret_word)):
+    dashes.append('-')
+-- t;
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  style='text-decoration:none' href="hangman.html#4:2:2"><code>Setup @ 4.2.2<font color=red> (this block)</font></code></a></li></ol></blockquote>
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="hangman.html#4:1:1"><code>hangman.py @ 4.1.1</code></a></li><li><a  target=_blank  style='text-decoration:none' href="test.html#6:1:2"><code><font color=#28B463>Testing</font> <font color=#34495E>/</font> test.py @ 6.1.2</code></a></li></ol></blockquote>
+</div>
+
+<br><a name='4:2:3'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Some Unused Code</span></h4><hr></center>
+<pre class="code_background prettyprint">
+for x in xrange(0,100):
+	print("Hello world\n")
+</pre></div>
+<blockquote style='border-left:10px solid orange'><code>Never used</code></blockquote>
+
+
+</div>
+
+</div>
+<a name="4:3"><div class="section"><h4>3. Getting User Input</h4></a>
+<p>Now we can start the game. We ask for the user's guess and store it in the <code>guess</code> variable.
+</p>
+
+<br><a name='4:3:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Take user input</span></h4><hr></center>
+<pre class="code_background prettyprint">
+<b><span class="nocode pln"><a class='nocode pln' style='text-decoration:none' href="hangman.html#4:6:1"><font color=maroon>&#9654;</font> 1<font color=crimson>.</font> <span class=code_title>print dashes array</span></span></b></a>
+print "You have " + str(lives_left) + " lives left"
+print "What's your guess? "
+guess = raw_input()
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="hangman.html#4:1:1"><code>hangman.py @ 4.1.1</code></a></li><li><a  target=_blank  style='text-decoration:none' href="test.html#6:1:2"><code><font color=#28B463>Testing</font> <font color=#34495E>/</font> test.py @ 6.1.2</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="4:4"><div class="section"><h4>4. Checking the User's Guess</h4></a>
+<p>We loop through the secret word, checking if any of its letters were guessed. If they were, reveal that letter in the dashes array. If none of the letters in secret word were equal to the guess, then <code>got_one_correct</code> will be false, and one guess will be added.
+</p>
+
+<br><a name='4:4:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Check input</span></h4><hr></center>
+<pre class="code_background prettyprint">
+got_one_correct = False
+for i in range(0, len(secret_word)):
+    if secret_word[i] == guess:
+        got_one_correct = True
+        dashes[i] = guess
+
+if not got_one_correct:
+    lives_left -= 1
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="hangman.html#4:1:1"><code>hangman.py @ 4.1.1</code></a></li><li><a  target=_blank  style='text-decoration:none' href="test.html#6:1:2"><code><font color=#28B463>Testing</font> <font color=#34495E>/</font> test.py @ 6.1.2</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="4:5"><div class="section"><h4>5. Checking for Victory</h4></a>
+<p>Now we should check if the user has guessed all the letters.
+</p>
+<p>Here we see if there are any dashes left in the array that holds the dashes. If there aren't, the user has won.
+</p>
+
+<br><a name='4:5:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Check win</span></h4><hr></center>
+<pre class="code_background prettyprint">
+if not ('-' in dashes):
+    print "You win! The word was " + secret_word
+    exit()
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="hangman.html#4:1:1"><code>hangman.py @ 4.1.1</code></a></li><li><a  target=_blank  style='text-decoration:none' href="test.html#6:1:2"><code><font color=#28B463>Testing</font> <font color=#34495E>/</font> test.py @ 6.1.2</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="4:6"><div class="section"><h4>6. Pretty Printing the Dashes</h4></a>
+<p>We want the dashes to look pretty when they are printed, not look like an array of chars. Instead of <code>['-', '-', '-', '-']</code>, we want <code>----</code>.
+</p>
+
+<br><a name='4:6:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>print dashes array</span></h4><hr></center>
+<pre class="code_background prettyprint">
+for letter in dashes:
+    sys.stdout.write(letter)
+print "\n",
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="hangman.html#4:3:1"><code>Take user input @ 4.3.1</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="4:7"><div class="section"><h4>7. The End</h4></a>
+
+<br><a name='4:7:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>End</span></h4><hr></center>
+<pre class="code_background prettyprint">
+print "You lose. The word was " + secret_word
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="hangman.html#4:1:1"><code>hangman.py @ 4.1.1</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="4:8"><div class="section"><h4>8. Words</h4></a>
+<p>Here is the file containing all the words for the game. It's just a simple text file with words split by whitespace.
+</p>
+
+<br><a name='4:8:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title><strong class=code_title>words.txt</strong></span></h4><hr></center>
+<pre class="code_background prettyprint">
+able about account acid across act addition adjustment 
+advertisement after again against agreement almost among
+attempt attention attraction authority automatic awake 
+baby back bad bag balance ball band base basin basket bath be
+beautiful because bed bee before behaviour belief bell 
+bent berry between bird birth bit bite bitter black blade blood
+carriage cart cat cause certain chain chalk chance 
+change cheap cheese chemical chest chief chin church circle clean clear
+clock cloth cloud coal coat cold collar colour comb 
+come comfort committee common company comparison competition complete
+complex condition connection conscious control cook copper copy 
+cord cork cotton cough country cover cow crack credit crime
+delicate dependent design desire destruction detail development 
+different digestion direction dirty discovery discussion disease
+last late laugh law lead leaf learning leather left letter level 
+library lift light like limit line linen lip liquid
+morning mother motion mountain mouth move much muscle music nail 
+name narrow nation natural near necessary neck need needle
+private probable process produce profit property prose protest public 
+pull pump punishment purpose push put quality question
+seem selection self send sense separate serious servant shade shake 
+shame sharp sheep shelf ship shirt shock shoe short
+square stage stamp star start statement station steam steel stem step 
+stick sticky stiff still stitch stocking stomach stone
+stop store story straight strange street stretch strong structure 
+substance such sudden sugar suggestion summer sun support surprise
+very vessel view violent voice waiting walk wall war warm wash waste 
+watch water wave wax way weather week weight well west
+wet wheel when where while whip whistle white who why wide will wind 
+window wine wing winter wire wise with woman wood wool word
+work worm wound writing wrong year yellow yesterday young
+</pre></div>
+
+
+
+</div>
+
+</div>
+<div class=section><a name=callgraph><h4>9. Appendix : Call graph</h4></a><div id=unused_graph></div><div id=used_graph></div><br><script language=javascript>const options = {format:'svg'};const used_data = `digraph "Hangman" {
+subgraph cluster_0 {
+label="— Used blocks —";
+"Check win" [ URL="hangman.html#4:5:1"];
+"Check input" [ URL="hangman.html#4:4:1"];
+"End" [ URL="hangman.html#4:7:1"];
+"print dashes array" [ URL="hangman.html#4:6:1"];
+"Setup" [ URL="hangman.html#4:2:1"];
+"Take user input" [ URL="hangman.html#4:3:1"];
+"hangman.py" [color=green3 shape=note URL="hangman.html#4:1:1"];
+"Multiple Files / Reused Code" [color=blue shape=rectangle URL="multiple_files.html#5:1:1" ];
+"hangman.py" -> "Setup" [label=" 1"];
+"Take user input" -> "print dashes array" [label=" 1"];
+"hangman.py" -> "Check input" [label=" 1"];
+"hangman.py" -> "Multiple Files / Reused Code" [label=" 1"];
+"hangman.py" -> "Take user input" [label=" 1"];
+"hangman.py" -> "Check win" [label=" 1"];
+"hangman.py" -> "End" [label=" 1"];
+}
+}`;document.getElementById('used_graph').innerHTML = Viz(used_data,options);const unused_data = `digraph "Hangman" {
+subgraph cluster_1 {
+label="— Unused blocks —";
+"Some Unused Code" [color=red URL="hangman.html#4:2:3"];
+}
+}`;document.getElementById('unused_graph').innerHTML = Viz(unused_data,options);</script></div></body>

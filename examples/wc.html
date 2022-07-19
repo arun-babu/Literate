@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>3. Word Count Program</title>
+<script src=lit.js></script><link rel='stylesheet' href=lit.css><script src='https://cdnjs.cloudflare.com/ajax/libs/viz.js/1.8.0/viz-lite.js' integrity='sha384-Y3b3bsRCJjOlZTzayFzYDC2EWb8aWeRTquEpyeAgOiq2edmwWLgjwrxqEuqj/OGw' crossorigin='anonymous'></script><script src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.13.4/mermaid.min.js' integrity='sha384-5hHNvPeMrNH14oM3IcQofDoBhiclNK3g2+hnEinKzQ07C4AliMeVpnvxuiwEGpaO' crossorigin='anonymous'></script></head>
+<body onload="prettyPrint()">
+<div class=noprint style='position:fixed; padding:5px 0 0 5px;left:0;top:0'><a  style="float:left;text-decoration:none" class="chapter-nav" href="hello.html"><h1 style='color:black'>&#9664;</h1></a><a  style="float:right;text-decoration:none" class="chapter-nav" href="hangman.html"><h1 style='color:black'>&#9654;</h1></a><center><a class='chapter-nav'><h1 style='cursor:pointer' onclick="window.location='index.html'">&equiv;</h1></a></center></div><section>
+<h1>3. Word Count Program</h1>
+<hr><h4>Table of contents</h4><div style='line-height:1.5em'><ol><li><a style='color:#337ABF' href=#3:1>An example of Literate programming</a></li><li><a style='color:#337ABF' href=#3:2>Structure</a></li><li><a style='color:#337ABF' href=#3:3>Standard Includes</a></li><li><a style='color:#337ABF' href=#3:4>Global declarations</a></li><li><a style='color:#337ABF' href=#3:5>The main program</a></li><li><a style='color:#337ABF' href=#3:6>Handling arguments</a></li><li><a style='color:#337ABF' href=#3:7>Options</a></li><li><a style='color:#337ABF' href=#3:8>The remainging arguments</a></li><li><a style='color:#337ABF' href=#3:9>Opening the file</a></li><li><a style='color:#337ABF' href=#3:10>Opening and closing the file</a></li><li><a style='color:#337ABF' href=#3:11>Buffering</a></li><li><a style='color:#337ABF' href=#3:12>Initialization</a></li><li><a style='color:#337ABF' href=#3:13>Counting</a></li><li><a style='color:#337ABF' href=#3:14>Buffered I/O</a></li><li><a style='color:#337ABF' href=#3:15>Statistics</a></li><li><a style='color:#337ABF' href=#3:16>Multiple files</a></li><li><a style='color:#337ABF' href=#3:17>Functions</a></li><li><a style='color:#337ABF' href=#callgraph>Appendix : Call graph</a></li></ol></div><hr><a name="3:1"><div class="section"><h4>1. An example of Literate programming</h4></a>
+<p>This example is a close adaptation of a tutorial example for Knuth and Levy's <code>CWEB</code> programming system,
+translated from <code>CWEB</code> to the <code>Literate</code> programming system. 
+That example in turn is based on a program by Klaus Guntermann and Joachim Schrod 
+[<em>TUGboat</em> <strong>7</strong> (1986), 134–137] for a version of the "word count" program from <code>UNIX</code>.
+</p>
+<p>This example demonstrates literate programming in C, although the 
+<code>Literate</code> programming system can be used in conjunction with any programming language. 
+The level of detail in this document is intentionally high, 
+for didactic purposes; many of the things spelled out here don’t need to be explained in other programs.
+</p>
+<p>The purpose of <code>wc</code> is to count lines, words, and/or characters in a list of files. 
+The number of lines in a file is the number of newline characters it contains. 
+The number of characters is the file length in bytes. A "word" is a maximal 
+sequence of consecutive characters other than newline, space, or tab, containing at 
+least one visible ASCII code. (We assume that the standard ASCII code is in use.)
+</p>
+<p>This version of <code>wc</code> has a nonstandard "silent" option (<code>-s</code>), which suppresses printing 
+except for the grand totals over all files.
+</p>
+
+</div>
+<a name="3:2"><div class="section"><h4>2. Structure</h4></a>
+<p>Most <code>Literate</code> programs share a common structure. It’s probably a good idea to state 
+the overall structure explicitly at the outset, even though the various parts could all be 
+introduced in a piecemeal fashion.
+</p>
+<p>Here, then, is an overview of the file <code>wc.c</code> that is defined by this <code>Literate</code> program <code>wc.lit</code>:
+</p>
+
+<br><a name='3:2:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title><strong class=code_title>wc.c</strong></span></h4><hr></center>
+<pre class="code_background prettyprint">
+<b><span class="nocode pln"><a class='nocode pln' style='text-decoration:none' href="wc.html#3:3:1"><font color=maroon>&#9654;</font> 1<font color=crimson>.</font> <span class=code_title>Header files to include</span></span></b></a>
+<b><span class="nocode pln"><a class='nocode pln' style='text-decoration:none' href="wc.html#3:4:1"><font color=maroon>&#9654;</font> 2<font color=crimson>.</font> <span class=code_title>Preprocessor definitions</span></span></b></a>
+<b><span class="nocode pln"><a class='nocode pln' style='text-decoration:none' href="wc.html#3:4:2"><font color=maroon>&#9654;</font> 3<font color=crimson>.</font> <span class=code_title>Global variables</span></span></b></a>
+<b><span class="nocode pln"><a class='nocode pln' style='text-decoration:none' href="wc.html#3:17:1"><font color=maroon>&#9654;</font> 4<font color=crimson>.</font> <span class=code_title>Functions</span></span></b></a>
+<b><span class="nocode pln"><a class='nocode pln' style='text-decoration:none' href="wc.html#3:5:1"><font color=maroon>&#9654;</font> 5<font color=crimson>.</font> <span class=code_title>The main program</span></span></b></a>
+</pre></div>
+
+
+
+</div>
+
+</div>
+<a name="3:3"><div class="section"><h4>3. Standard Includes</h4></a>
+<p>We must include the standard I/O definitions, since we want to send formatted output to <em>stdout</em> and <em>stderr</em>.
+</p>
+
+<br><a name='3:3:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Header files to include</span></h4><hr></center>
+<pre class="code_background prettyprint">
+#include &lt;stdio.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;unistd.h&gt;
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:2:1"><code>wc.c @ 3.2.1</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="3:4"><div class="section"><h4>4. Global declarations</h4></a>
+<p>The <code>status</code> variable will tell the operating system if the run was successful or not, 
+and <code>prog_name</code> is used in case there’s an error message to be printed.
+</p>
+
+<br><a name='3:4:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Preprocessor definitions</span></h4><hr></center>
+<pre class="code_background prettyprint">
+#define OK 1    /* status code for successful run */
+#define usage_error 1    /* status code for improper syntax */
+#define cannot_open_file 2    /* status code for file access error */ 
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  style='text-decoration:none' href="wc.html#3:10:1"><code>Preprocessor definitions @ 3.10.1</code></a></li></ol></blockquote>
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:2:1"><code>wc.c @ 3.2.1</code></a></li></ol></blockquote>
+</div>
+
+<br><a name='3:4:2'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Global variables</span></h4><hr></center>
+<pre class="code_background prettyprint">
+int status = OK;    /* exit status of command, initially OK */
+char *prog_name;    /* who we are */
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  style='text-decoration:none' href="wc.html#3:12:2"><code>Global variables @ 3.12.2</code></a></li></ol></blockquote>
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:2:1"><code>wc.c @ 3.2.1</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="3:5"><div class="section"><h4>5. The main program</h4></a>
+<p>Now we come to the general layout of the <code>main()</code> function.
+</p>
+
+<br><a name='3:5:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>The main program</span></h4><hr></center>
+<pre class="code_background prettyprint">
+int main(int argc, char **argv)
+{
+<b><span class="nocode pln">    <a class='nocode pln' style='text-decoration:none' href="wc.html#3:6:1"><font color=maroon>&#9654;</font> 1<font color=crimson>.</font> <span class=code_title>Variables local to main</span></span></b></a>
+    prog_name = argv[0];
+<b><span class="nocode pln">    <a class='nocode pln' style='text-decoration:none' href="wc.html#3:7:1"><font color=maroon>&#9654;</font> 2<font color=crimson>.</font> <span class=code_title>Set up option selection</span></span></b></a>
+<b><span class="nocode pln">    <a class='nocode pln' style='text-decoration:none' href="wc.html#3:8:1"><font color=maroon>&#9654;</font> 3<font color=crimson>.</font> <span class=code_title>Process all the files</span></span></b></a>
+<b><span class="nocode pln">    <a class='nocode pln' style='text-decoration:none' href="wc.html#3:16:1"><font color=maroon>&#9654;</font> 4<font color=crimson>.</font> <span class=code_title>Print the grand totals if there were multiple files</span></span></b></a>
+    return status;
+}
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:2:1"><code>wc.c @ 3.2.1</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="3:6"><div class="section"><h4>6. Handling arguments</h4></a>
+<p>If the first argument begins with a '<code>-</code>', the user is choosing the desired counts and 
+specifying the order in which they should be displayed. Each selection is given by the 
+initial character (lines, words, or characters). For example, '<code>-cl</code>' would cause just 
+the number of characters and the number of lines to be printed, in that order. The 
+default, if no special argument is given, is '<code>-lwc</code>'.
+</p>
+<p>We do not process this string now; we simply remember where it is. It will be used 
+to control the formatting at output time.
+</p>
+<p>If the '<code>-</code>' is immediately followed by '<code>s</code>', only summary totals are printed.
+</p>
+
+<br><a name='3:6:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Variables local to main</span></h4><hr></center>
+<pre class="code_background prettyprint">
+int file_count;    /* how many files there are */
+char *which;    /* which counts to print */
+int silent = 0;    /* nonzero if the silent option was selected */
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  style='text-decoration:none' href="wc.html#3:9:1"><code>Variables local to main @ 3.9.1</code></a></li><li><a  style='text-decoration:none' href="wc.html#3:11:1"><code>Variables local to main @ 3.11.1</code></a></li></ol></blockquote>
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:5:1"><code>The main program @ 3.5.1</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="3:7"><div class="section"><h4>7. Options</h4></a>
+
+<br><a name='3:7:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Set up option selection</span></h4><hr></center>
+<pre class="code_background prettyprint">
+which = "lwc";    /* if no option is given, print all three values */
+if (argc &gt;1 &amp;&amp; *argv[1] == '-') {
+    argv[1]++;
+    if (*argv [1] == 's') silent = 1, argv [1]++;
+    if (*argv [1]) which = argv [1];
+    argc--;
+    argv++;
+}
+file_count = argc - 1;
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:5:1"><code>The main program @ 3.5.1</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="3:8"><div class="section"><h4>8. The remainging arguments</h4></a>
+<p>Now we scan the remaining arguments and try to open a file, if possible. The file 
+is processed and its statistics are given. We use a <code>do ... while</code> loop because 
+we should read from the standard input if no file name is given.
+</p>
+
+<br><a name='3:8:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Process all the files</span></h4><hr></center>
+<pre class="code_background prettyprint">
+argc--;
+
+do
+{
+<b><span class="nocode pln">    <a class='nocode pln' style='text-decoration:none' href="wc.html#3:10:2"><font color=maroon>&#9654;</font> 1<font color=crimson>.</font> <span class=code_title>If a file is given, try to open *(++argv ); continue if unsuccessful</span></span></b></a>
+<b><span class="nocode pln">    <a class='nocode pln' style='text-decoration:none' href="wc.html#3:12:1"><font color=maroon>&#9654;</font> 2<font color=crimson>.</font> <span class=code_title>Initialize pointers and counters</span></span></b></a>
+<b><span class="nocode pln">    <a class='nocode pln' style='text-decoration:none' href="wc.html#3:13:1"><font color=maroon>&#9654;</font> 3<font color=crimson>.</font> <span class=code_title>Scan file</span></span></b></a>
+<b><span class="nocode pln">    <a class='nocode pln' style='text-decoration:none' href="wc.html#3:15:1"><font color=maroon>&#9654;</font> 4<font color=crimson>.</font> <span class=code_title>Write statistics for file</span></span></b></a>
+<b><span class="nocode pln">    <a class='nocode pln' style='text-decoration:none' href="wc.html#3:10:3"><font color=maroon>&#9654;</font> 5<font color=crimson>.</font> <span class=code_title>Close file</span></span></b></a>
+<b><span class="nocode pln">    <a class='nocode pln' style='text-decoration:none' href="wc.html#3:15:2"><font color=maroon>&#9654;</font> 6<font color=crimson>.</font> <span class=code_title>Update grand totals</span></span></b></a>
+
+} while (--argc &gt; 0);
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:5:1"><code>The main program @ 3.5.1</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="3:9"><div class="section"><h4>9. Opening the file</h4></a>
+<p>Here’s the code to open the file. A special trick allows us to handle input from <em>stdin</em> 
+when no name is given. Recall that the file descriptor to <em>stdin</em> is <code>0</code>; that’s what we 
+use as the default initial value.
+</p>
+
+<br><a name='3:9:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4><a style='text-decoration:none;color:blue;font-family:Monaco,"Lucida Console",monospace' href="wc.html#3:6:1"><span class=code_title>Variables local to main</span> <font color=#008000>+=</font></a></h4><hr></center>
+<pre class="code_background prettyprint">
+int fd = 0;
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  style='text-decoration:none' href="wc.html#3:9:1"><code>Variables local to main @ 3.9.1<font color=red> (this block)</font></code></a></li><li><a  style='text-decoration:none' href="wc.html#3:11:1"><code>Variables local to main @ 3.11.1</code></a></li></ol></blockquote>
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:5:1"><code>The main program @ 3.5.1</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="3:10"><div class="section"><h4>10. Opening and closing the file</h4></a>
+
+<br><a name='3:10:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4><a style='text-decoration:none;color:blue;font-family:Monaco,"Lucida Console",monospace' href="wc.html#3:4:1"><span class=code_title>Preprocessor definitions</span> <font color=#008000>+=</font></a></h4><hr></center>
+<pre class="code_background prettyprint">
+#define READ_ONLY 0
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  style='text-decoration:none' href="wc.html#3:10:1"><code>Preprocessor definitions @ 3.10.1<font color=red> (this block)</font></code></a></li></ol></blockquote>
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:2:1"><code>wc.c @ 3.2.1</code></a></li></ol></blockquote>
+</div>
+
+<br><a name='3:10:2'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>If a file is given, try to open *(++argv ); continue if unsuccessful</span></h4><hr></center>
+<pre class="code_background prettyprint">
+if (file_count &gt; 0 &amp;&amp; (fd = open(*(++argv), READ_ONLY)) &lt; 0)
+{
+    fprintf(stderr, "%s: cannot open file %s\n", prog_name, *argv);
+    status |= 2;
+    file_count--;
+    continue;
+}
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:8:1"><code>Process all the files @ 3.8.1</code></a></li></ol></blockquote>
+</div>
+
+<br><a name='3:10:3'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Close file</span></h4><hr></center>
+<pre class="code_background prettyprint">
+close(fd);
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:8:1"><code>Process all the files @ 3.8.1</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="3:11"><div class="section"><h4>11. Buffering</h4></a>
+<p>We will do some homemade buffering in order to speed things up: Characters will be 
+read into the buffer array before we process them. To do this we set up appropriate 
+pointers and counters.
+</p>
+
+<br><a name='3:11:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4><a style='text-decoration:none;color:blue;font-family:Monaco,"Lucida Console",monospace' href="wc.html#3:6:1"><span class=code_title>Variables local to main</span> <font color=#008000>+=</font></a></h4><hr></center>
+<pre class="code_background prettyprint">
+char buffer[BUFSIZ];    /* we read the input into this array */
+register char *ptr;    /* the first unprocessed character in buffer */
+register char *buf_end;    /* the first unused position in buffer */
+register int c;    /* current character or number of characters just read */
+int in_word;    /* are we within a word? */
+long word_count, line_count, char_count;   
+    /* number of words, lines, and characters found in the file so far */
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  style='text-decoration:none' href="wc.html#3:9:1"><code>Variables local to main @ 3.9.1</code></a></li><li><a  style='text-decoration:none' href="wc.html#3:11:1"><code>Variables local to main @ 3.11.1<font color=red> (this block)</font></code></a></li></ol></blockquote>
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:5:1"><code>The main program @ 3.5.1</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="3:12"><div class="section"><h4>12. Initialization</h4></a>
+
+<br><a name='3:12:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Initialize pointers and counters</span></h4><hr></center>
+<pre class="code_background prettyprint">
+ptr = buf_end = buffer;
+line_count = word_count = char_count = 0;
+in_word = 0;
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:8:1"><code>Process all the files @ 3.8.1</code></a></li></ol></blockquote>
+</div>
+<p>The grand totals must be initialized to zero at the beginning of the program. 
+If we made these variables local to main, we would have to do this initialization explicitly; 
+however, C’s globals are automatically zeroed. (Or rather, "statically zeroed.") (Get it?)
+</p>
+
+<br><a name='3:12:2'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4><a style='text-decoration:none;color:blue;font-family:Monaco,"Lucida Console",monospace' href="wc.html#3:4:2"><span class=code_title>Global variables</span> <font color=#008000>+=</font></a></h4><hr></center>
+<pre class="code_background prettyprint">
+long tot_word_count, tot_line_count, tot_char_count; 
+    /* total number of words, lines and chars */
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  style='text-decoration:none' href="wc.html#3:12:2"><code>Global variables @ 3.12.2<font color=red> (this block)</font></code></a></li></ol></blockquote>
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:2:1"><code>wc.c @ 3.2.1</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="3:13"><div class="section"><h4>13. Counting</h4></a>
+<p>The present section, which does the counting that is <code>wc</code>'s <em>raison d'être</em>, was actually 
+one of the simplest to write. We look at each character and change state if it begins or ends a word.
+</p>
+
+<br><a name='3:13:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Scan file</span></h4><hr></center>
+<pre class="code_background prettyprint">
+while (1)
+{
+<b><span class="nocode pln">	<a class='nocode pln' style='text-decoration:none' href="wc.html#3:14:1"><font color=maroon>&#9654;</font> 1<font color=crimson>.</font> <span class=code_title>Fill buffer if it is empty; break at end of file</span></span></b></a>
+
+	c = *ptr++;
+	if (c &gt; ' ' &amp;&amp; c &lt; 177)    /* visible ASCII codes */
+	{
+	        if (!in_word)
+		{
+			word_count++;
+			in_word = 1;
+		}
+
+		continue;
+	}
+
+	if (c == '\n')
+		line_count++;
+	else
+	{
+		if (c != ' ' &amp;&amp; c != '\t')
+			continue;
+	}
+
+	in_word = 0;    /* c is newline, space, or tab */
+}
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:8:1"><code>Process all the files @ 3.8.1</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="3:14"><div class="section"><h4>14. Buffered I/O</h4></a>
+<p>Buffered I/O allows us to count the number of characters almost for free.
+</p>
+
+<br><a name='3:14:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Fill buffer if it is empty; break at end of file</span></h4><hr></center>
+<pre class="code_background prettyprint">
+if (ptr &gt;= buf_end) {
+    ptr = buffer;
+    c = read(fd, ptr, BUFSIZ);
+    if (c &lt;= 0) break;
+    char_count += c;
+    buf_end = buffer + c;
+}
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:13:1"><code>Scan file @ 3.13.1</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="3:15"><div class="section"><h4>15. Statistics</h4></a>
+<p>It’s convenient to output the statistics by defining a new function <code>wc_print()</code>; 
+then the same function can be used for the totals. Additionally we must decide here 
+if we know the name of the file we have processed or if it was just <em>stdin</em>.
+</p>
+
+<br><a name='3:15:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Write statistics for file</span></h4><hr></center>
+<pre class="code_background prettyprint">
+if (!silent) {
+    wc_print(which, char_count, word_count, line_count);
+    if (file_count) printf(" %s\n", *argv);    /* not stdin */
+    else printf("\n");    /* stdin */
+}
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:8:1"><code>Process all the files @ 3.8.1</code></a></li></ol></blockquote>
+</div>
+
+<br><a name='3:15:2'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Update grand totals</span></h4><hr></center>
+<pre class="code_background prettyprint">
+tot_line_count += line_count;
+tot_word_count += word_count;
+tot_char_count += char_count;
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:8:1"><code>Process all the files @ 3.8.1</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="3:16"><div class="section"><h4>16. Multiple files</h4></a>
+<p>We might as well improve a bit on <code>UNIX</code>’s <code>wc</code> by displaying the number of files too.
+</p>
+
+<br><a name='3:16:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Print the grand totals if there were multiple files</span></h4><hr></center>
+<pre class="code_background prettyprint">
+if (file_count &gt; 1 || silent) {
+    wc_print(which, tot_char_count, tot_word_count, tot_line_count);
+    if (!file_count) printf("\n");
+    else printf(" total in %d file%s\n", file_count, file_count &gt; 1 ? "s" : "");
+}
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:5:1"><code>The main program @ 3.5.1</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="3:17"><div class="section"><h4>17. Functions</h4></a>
+<p>Here now is the function that prints the values according to the specified options. 
+The calling routine is supposed to supply a newline. If an invalid option character 
+is found we inform the user about proper usage of the command. Counts are printed 
+in 8-digit fields so that they will line up in columns.
+</p>
+
+<br><a name='3:17:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Functions</span></h4><hr></center>
+<pre class="code_background prettyprint">
+void wc_print(char *which, long char_count, long word_count, long line_count)
+{
+    while (*which)
+        switch (*which++) {
+        case 'l': printf("%8ld", line_count);
+            break;
+        case 'w': printf("%8ld", word_count);
+            break;
+        case 'c': printf("%8ld", char_count);
+            break;
+        default:
+            if ((status &amp; 1) == 0) {
+                fprintf(stderr, "\nUsage: %s [-lwc] [filename ...]\n", prog_name);
+                status |= 1;
+            }
+        }
+}
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="wc.html#3:2:1"><code>wc.c @ 3.2.1</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<div class=section><a name=callgraph><h4>18. Appendix : Call graph</h4></a><div id=unused_graph></div><div id=used_graph></div><br><script language=javascript>const options = {format:'svg'};const used_data = `digraph "Word Count Program" {
+subgraph cluster_0 {
+label="— Used blocks —";
+"The main program" [ URL="wc.html#3:5:1"];
+"Process all the files" [ URL="wc.html#3:8:1"];
+"Header files to include" [ URL="wc.html#3:3:1"];
+"Fill buffer if it is empty; break at end of file" [ URL="wc.html#3:14:1"];
+"Variables local to main" [ URL="wc.html#3:6:1"];
+"Functions" [ URL="wc.html#3:17:1"];
+"Preprocessor definitions" [ URL="wc.html#3:4:1"];
+"Global variables" [ URL="wc.html#3:4:2"];
+"Close file" [ URL="wc.html#3:10:3"];
+"Initialize pointers and counters" [ URL="wc.html#3:12:1"];
+"Print the grand totals if there were multiple files" [ URL="wc.html#3:16:1"];
+"Write statistics for file" [ URL="wc.html#3:15:1"];
+"Scan file" [ URL="wc.html#3:13:1"];
+"Update grand totals" [ URL="wc.html#3:15:2"];
+"If a file is given, try to open *(++argv ); continue if unsuccessful" [ URL="wc.html#3:10:2"];
+"Set up option selection" [ URL="wc.html#3:7:1"];
+"wc.c" [color=green3 shape=note URL="wc.html#3:2:1"];
+"wc.c" -> "Global variables" [label=" 1"];
+"The main program" -> "Variables local to main" [label=" 1"];
+"Process all the files" -> "If a file is given, try to open *(++argv ); continue if unsuccessful" [label=" 1"];
+"The main program" -> "Process all the files" [label=" 1"];
+"Process all the files" -> "Write statistics for file" [label=" 1"];
+"The main program" -> "Set up option selection" [label=" 1"];
+"Process all the files" -> "Initialize pointers and counters" [label=" 1"];
+"Process all the files" -> "Close file" [label=" 1"];
+"wc.c" -> "The main program" [label=" 1"];
+"The main program" -> "Print the grand totals if there were multiple files" [label=" 1"];
+"wc.c" -> "Preprocessor definitions" [label=" 1"];
+"wc.c" -> "Header files to include" [label=" 1"];
+"wc.c" -> "Functions" [label=" 1"];
+"Process all the files" -> "Scan file" [label=" 1"];
+"Process all the files" -> "Update grand totals" [label=" 1"];
+"Scan file" -> "Fill buffer if it is empty; break at end of file" [label=" 1"];
+}
+}`;document.getElementById('used_graph').innerHTML = Viz(used_data,options);</script></div></body>

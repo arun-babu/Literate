@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>6. Testing</title>
+<script src=lit.js></script><link rel='stylesheet' href=lit.css><script src='https://cdnjs.cloudflare.com/ajax/libs/viz.js/1.8.0/viz-lite.js' integrity='sha384-Y3b3bsRCJjOlZTzayFzYDC2EWb8aWeRTquEpyeAgOiq2edmwWLgjwrxqEuqj/OGw' crossorigin='anonymous'></script><script src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.13.4/mermaid.min.js' integrity='sha384-5hHNvPeMrNH14oM3IcQofDoBhiclNK3g2+hnEinKzQ07C4AliMeVpnvxuiwEGpaO' crossorigin='anonymous'></script></head>
+<body onload="prettyPrint()">
+<div class=noprint style='position:fixed; padding:5px 0 0 5px;left:0;top:0'><a  style="float:left;text-decoration:none" class="chapter-nav" href="multiple_files.html"><h1 style='color:black'>&#9664;</h1></a><a  style="float:right;text-decoration:none" class="chapter-nav" href="reference.html"><h1 style='color:black'>&#9654;</h1></a><center><a class='chapter-nav'><h1 style='cursor:pointer' onclick="window.location='index.html'">&equiv;</h1></a></center></div><section>
+<h1>6. Testing</h1>
+<hr><h4>Table of contents</h4><div style='line-height:1.5em'><ol><li><a style='color:#337ABF' href=#6:1>Introduction</a></li><li><a style='color:#337ABF' href=#6:2>end</a></li><li><a style='color:#337ABF' href=#callgraph>Appendix : Call graph</a></li></ol></div><hr><a name="6:1"><div class="section"><h4>1. Introduction</h4></a>
+<p>This is an example hello world C program.
+We can define codeblocks with <code>---</code>
+</p>
+<p><center><font color=white><div class=mermaid>
+graph TD
+    A[Christmas] -->|Get money| B(Go shopping)
+    B --> C{Let me think}
+    C -->|One| D[Laptop]
+    C -->|Two| E[iPhone]
+    C -->|Three| F[fa:fa-car Car]
+</div></font></center>
+</p>
+
+<br><a name='6:1:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4><a style='text-decoration:none;color:blue;font-family:Monaco,"Lucida Console",monospace' href="hangman.html#4:1:1"><span class=code_title><strong class=code_title>hangman.py</strong></span> <font color=#008000>+=</font></a></h4><hr></center>
+<pre class="code_background prettyprint">
+sys.exit(-1) ...............................................................................................................................................................
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  target=_blank  style='text-decoration:none' href="hangman.html#4:1:2"><code><font color=#28B463>Hangman</font> <font color=#34495E>/</font> hangman.py @ 4.1.2</code></a></li><li><a  style='text-decoration:none' href="test.html#6:1:1"><code>hangman.py @ 6.1.1<font color=red> (this block)</font></code></a></li></ol></blockquote>
+
+
+</div>
+
+<br><a name='6:1:2'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title><strong class=code_title>test.py</strong></span></h4><hr></center>
+<pre class="code_background prettyprint">
+import random
+import sys
+
+print "Welcome to hangman!"
+
+<b><span class="nocode pln"><a class='nocode pln' style='text-decoration:none' href="hangman.html#4:2:1" target=_blank ><font color=maroon>&#9654;</font> 1<font color=crimson>.</font> <span class=code_title><font color=#28B463>Hangman</font> <font color=#34495E>/</font> Setup</span></span></b></a>
+
+lives_left = 8
+
+while lives_left &gt; 0:
+#
+<b><span class="nocode pln">    <a class='nocode pln' style='text-decoration:none' href="hangman.html#4:3:1" target=_blank ><font color=maroon>&#9654;</font> 2<font color=crimson>.</font> <span class=code_title><font color=#28B463>Hangman</font> <font color=#34495E>/</font> Take user input</span></span></b></a>
+<b><span class="nocode pln">    <a class='nocode pln' style='text-decoration:none' href="hangman.html#4:4:1" target=_blank ><font color=maroon>&#9654;</font> 3<font color=crimson>.</font> <span class=code_title><font color=#28B463>Hangman</font> <font color=#34495E>/</font> Check input</span></span></b></a>
+<b><span class="nocode pln">    <a class='nocode pln' style='text-decoration:none' href="hangman.html#4:5:1" target=_blank ><font color=maroon>&#9654;</font> 4<font color=crimson>.</font> <span class=code_title><font color=#28B463>Hangman</font> <font color=#34495E>/</font> Check win</span></span></b></a>
+#
+
+<b><span class="nocode pln"><a class='nocode pln' style='text-decoration:none' href="test.html#6:1:3"><font color=maroon>&#9654;</font> 5<font color=crimson>.</font> <span class=code_title>End</span></span></b></a>
+</pre></div>
+
+
+
+</div>
+
+<br><a name='6:1:3'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>End</span></h4><hr></center>
+<pre class="code_background prettyprint">
+print "You lose. The word was " + secret_word
+<b><span class="nocode pln"><a class='nocode pln' style='text-decoration:none' href="test.html#6:2:1"><font color=maroon>&#9654;</font> 1<font color=crimson>.</font> <span class=code_title>x</span></span></b></a>
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="test.html#6:1:2"><code>test.py @ 6.1.2</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<a name="6:2"><div class="section"><h4>2. end</h4></a>
+<h3> subsection test</h3>
+
+<br><a name='6:2:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>x</span></h4><hr></center>
+<pre class="code_background prettyprint">
+print("hello world")
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="test.html#6:1:3"><code>End @ 6.1.3</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<div class=section><a name=callgraph><h4>3. Appendix : Call graph</h4></a><div id=unused_graph></div><div id=used_graph></div><br><script language=javascript>const options = {format:'svg'};const used_data = `digraph "Testing" {
+subgraph cluster_0 {
+label="— Used blocks —";
+"End" [ URL="test.html#6:1:3"];
+"x" [ URL="test.html#6:2:1"];
+"test.py" [color=green3 shape=note URL="test.html#6:1:2"];
+"Hangman / Check input" [color=blue shape=rectangle URL="hangman.html#4:4:1" ];
+"Hangman / Setup" [color=blue shape=rectangle URL="hangman.html#4:2:1" ];
+"Hangman / Take user input" [color=blue shape=rectangle URL="hangman.html#4:3:1" ];
+"Hangman / Check win" [color=blue shape=rectangle URL="hangman.html#4:5:1" ];
+"End" -> "x" [label=" 1"];
+"test.py" -> "Hangman / Take user input" [label=" 1"];
+"test.py" -> "Hangman / Setup" [label=" 1"];
+"test.py" -> "Hangman / Check input" [label=" 1"];
+"test.py" -> "Hangman / Check win" [label=" 1"];
+"test.py" -> "End" [label=" 1"];
+}
+}`;document.getElementById('used_graph').innerHTML = Viz(used_data,options);</script></div></body>

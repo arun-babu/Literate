@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>1. Main</title>
+<script src=lit.js></script><link rel='stylesheet' href=lit.css><script src='https://cdnjs.cloudflare.com/ajax/libs/viz.js/1.8.0/viz-lite.js' integrity='sha384-Y3b3bsRCJjOlZTzayFzYDC2EWb8aWeRTquEpyeAgOiq2edmwWLgjwrxqEuqj/OGw' crossorigin='anonymous'></script><script src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.13.4/mermaid.min.js' integrity='sha384-5hHNvPeMrNH14oM3IcQofDoBhiclNK3g2+hnEinKzQ07C4AliMeVpnvxuiwEGpaO' crossorigin='anonymous'></script></head>
+<body onload="prettyPrint()">
+<section>
+<h1>1. Main</h1>
+<hr><h4>Table of contents</h4><div style='line-height:1.5em'><ol><li><a style='color:#337ABF' href=#1:1>Introduction</a></li><li><a style='color:#337ABF' href=#1:2>Parsing the Arguments</a></li><li><a style='color:#337ABF' href=#1:3>Run Literate</a></li><li><a style='color:#337ABF' href=#1:4>Compiler errors</a></li><li><a style='color:#337ABF' href=#1:5>GetLinenums</a></li><li><a style='color:#337ABF' href=#callgraph>Appendix : Call graph</a></li></ol></div><hr><a name="1:1"><div class="section"><h4>1. Introduction</h4></a>
+<p>This file contains the source code for <code>main.d</code> the file which contains the
+main function for Literate. This will parse any arguments, show help text
+and finally run tangle or weave (or both) on any input files.
+</p>
+<p>Here is an overview:
+</p>
+
+<br><a name='1:1:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title><strong class=code_title>main.d</strong></span></h4><hr></center>
+<pre class="code_background prettyprint lang-d">
+<b><span class="nocode pln"><a class='nocode pln' style='text-decoration:none' href="main.html#1:5:2"><font color=maroon>&#9654;</font> 1<font color=crimson>.</font> <span class=code_title>Imports</span></span></b></a>
+
+<b><span class="nocode pln"><a class='nocode pln' style='text-decoration:none' href="main.html#1:5:1"><font color=maroon>&#9654;</font> 2<font color=crimson>.</font> <span class=code_title>getLinenums function</span></span></b></a>
+<b><span class="nocode pln"><a class='nocode pln' style='text-decoration:none' href="main.html#1:3:2"><font color=maroon>&#9654;</font> 3<font color=crimson>.</font> <span class=code_title>lit function</span></span></b></a>
+
+void main(in string[] args) {
+    string[] files = [];
+<b><span class="nocode pln">    <a class='nocode pln' style='text-decoration:none' href="main.html#1:2:4"><font color=maroon>&#9654;</font> 4<font color=crimson>.</font> <span class=code_title>Parse the arguments</span></span></b></a>
+<b><span class="nocode pln">    <a class='nocode pln' style='text-decoration:none' href="main.html#1:3:1"><font color=maroon>&#9654;</font> 5<font color=crimson>.</font> <span class=code_title>Run Literate</span></span></b></a>
+}
+</pre></div>
+
+
+
+</div>
+</div>
+<a name="1:2"><div class="section"><h4>2. Parsing the Arguments</h4></a>
+<p>The arguments will consist of either flags or input files. The flags Literate
+accepts are:
+</p>
+<ul>
+<li><code>--help       -h</code>          Show the help text
+</li>
+<li><code>--tangle     -t</code>          Only run tangle
+</li>
+<li><code>--weave      -w</code>          Only run weave
+</li>
+<li><code>--no-output</code>              Do not generate any output
+</li>
+<li><code>--out-dir    -odir DIR</code>   Put the generated files in <code>DIR</code>
+</li>
+<li><code>--compiler</code>               Don't ignore the <code>@compiler</code> command
+</li>
+<li><code>--linenums -l STR</code>        Write line numbers prepended with <code>STR</code> to the output file
+</li>
+<li><code>--md-compiler COMPILER</code>   Use the command line program <code>COMPILER</code> as the markdown compiler instead of the built-in one
+</li>
+<li><code>--section-depth INT</code>      Output section headers at the given depth in the weave
+</li>
+<li><code>--version</code>                Show the version number and compiler information
+</li>
+</ul>
+<p>All other inputs are input files.
+</p>
+<p>We also need some variables to store these flags in, and they should be global
+so that the rest of the program can access them.
+</p>
+
+<br><a name='1:2:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Globals</span></h4><hr></center>
+<pre class="code_background prettyprint lang-d">
+bool tangleOnly;
+bool isBook;
+bool weaveOnly;
+bool noOutput;
+bool noCompCmd = true;
+bool tangleErrors;
+bool useStdin;
+bool lineDirectives;
+bool useMdCompiler;
+int sectionDepth = 4;
+string mdCompilerCmd;
+string versionNum = "0.1";
+string outDir = "."; // Default is current directory
+string lineDirectiveStr;
+
+string helpText =
+"Lit: Literate Programming System\n" ~
+"\n" ~
+"Usage: lit [options] &lt;inputs&gt;\n" ~
+"\n" ~
+"Options:\n" ~
+"--help       -h         Show this help text\n" ~
+"--tangle     -t         Only compile code files\n" ~
+"--weave      -w         Only compile HTML files\n" ~
+"--no-output  -no        Do not generate any output files\n" ~
+"--out-dir    -odir DIR  Put the generated files in DIR\n" ~
+"--compiler   -c         Report compiler errors (needs @compiler to be defined)\n" ~
+"--linenums   -l    STR  Write line numbers prepended with STR to the output file\n" ~
+"--md-compiler COMPILER  Use COMPILER as the markdown compiler instead of the built-in one\n" ~
+"--section-depth INT     Output section headers at the given depth in the weave\n" ~
+"--version    -v         Show the version number and compiler information";
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="main.html#1:2:3"><code>globals.d @ 1.2.3</code></a></li></ol></blockquote>
+</div>
+<p>This program uses a number of block modifiers in order to facilitate certain functionality.
+i.e. If you don't wish a code block to be woven into the final HTML then the <code>noWeave</code> 
+modifier will indicate this for you.
+</p>
+<p>Each modifier is represented by this list of enums:
+</p>
+
+<br><a name='1:2:2'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Modifiers</span></h4><hr></center>
+<pre class="code_background prettyprint lang-d">
+enum Modifier {
+    noWeave,
+    noTangle, // Not yet implemented
+    noHeader, // Don't print the block header
+    additive, // +=
+    redef, // :=
+}
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="main.html#1:2:3"><code>globals.d @ 1.2.3</code></a></li></ol></blockquote>
+</div>
+<p>We'll put these two blocks in their own file for "globals".
+</p>
+
+<br><a name='1:2:3'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title><strong class=code_title>globals.d</strong></span></h4><hr></center>
+<pre class="code_background prettyprint lang-d">
+<b><span class="nocode pln"><a class='nocode pln' style='text-decoration:none' href="main.html#1:2:1"><font color=maroon>&#9654;</font> 1<font color=crimson>.</font> <span class=code_title>Globals</span></span></b></a>
+<b><span class="nocode pln"><a class='nocode pln' style='text-decoration:none' href="main.html#1:2:2"><font color=maroon>&#9654;</font> 2<font color=crimson>.</font> <span class=code_title>Modifiers</span></span></b></a>
+</pre></div>
+
+
+
+</div>
+<p>Now, to actually parse the arguments:
+</p>
+
+<br><a name='1:2:4'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Parse the arguments</span></h4><hr></center>
+<pre class="code_background prettyprint lang-d">
+for (int i = 1; i &lt; args.length; i++) {
+    auto arg = args[i];
+    if (arg == "--help" || arg == "-h") {
+        writeln(helpText);
+        return;
+    } else if (arg == "--tangle" || arg == "-t") {
+        tangleOnly = true;
+    } else if (arg == "--weave" || arg == "-w") {
+        weaveOnly = true;
+    } else if (arg == "--no-output" || arg == "-no") {
+        noOutput = true;
+    } else if (arg == "--out-dir" || arg == "-odir") {
+        if (i == args.length - 1) {
+            writeln("No output directory provided.");
+            return;
+        }
+        outDir = args[++i];
+    } else if (arg == "--compiler" || arg == "-c") {
+        noCompCmd = false;
+        noOutput = true;
+    } else if (arg == "--linenums" || arg == "-l") {
+        lineDirectives = true;
+        if (i == args.length - 1) {
+            writeln("No line number string provided.");
+            return;
+        }
+        lineDirectiveStr = args[++i];
+    } else if (arg == "--md-compiler") {
+        useMdCompiler = true;
+        if (i == args.length - 1) {
+            writeln("No markdown compiler provided.");
+            return;
+        }
+        mdCompilerCmd = args[++i];
+    } else if (arg == "--section-depth") {
+        if (i == args.length - 1) {
+            writeln("No section depth provided.");
+            return;
+        }
+        auto sectionDepthArg = args[++i];
+        if (!sectionDepthArg.isNumeric()) {
+            writeln("Section depth should be a numeric value.");
+            return;
+        }
+        sectionDepth = to!int(sectionDepthArg);
+    } else if (arg == "--version" || arg == "-v") {
+        writeln("Literate version " ~ versionNum);
+        writeln("Compiled by " ~ __VENDOR__ ~ " on " ~ __DATE__);
+        return;
+    } else if (arg == "-") {
+        useStdin = true;
+    } else {
+        files ~= arg;
+    }
+}
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="main.html#1:1:1"><code>main.d @ 1.1.1</code></a></li></ol></blockquote>
+</div>
+</div>
+<a name="1:3"><div class="section"><h4>3. Run Literate</h4></a>
+<p>To run literate we go through every file that was passed in, check if it exists,
+and run tangle and weave on it (unless <code>tangleOnly</code> or <code>weaveOnly</code> was specified).
+</p>
+
+<br><a name='1:3:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Run Literate</span></h4><hr></center>
+<pre class="code_background prettyprint lang-d">
+if (files.length &gt; 0) {
+    foreach (filename; files) {
+        if (!filename.exists()) {
+            writeln("File ", filename, " does not exist!");
+            continue;
+        }
+        File f = File(filename);
+        string fileSrc = readall(f);
+
+        lit(filename, fileSrc);
+    }
+} else if (useStdin) {
+    string stdinSrc = readall();
+    lit("stdin", stdinSrc);
+} else  {
+    writeln(helpText);
+}
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="main.html#1:1:1"><code>main.d @ 1.1.1</code></a></li></ol></blockquote>
+</div>
+<p>The lit function parses the text that is inputted and then either tangles,
+weaves, or both. Finally it Checks for compiler errors if the <code>--compiler</code> flag
+was passed.
+</p>
+
+<br><a name='1:3:2'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>lit function</span></h4><hr></center>
+<pre class="code_background prettyprint lang-d">
+void lit(string filename, string fileSrc) {
+    Program p = new Program();
+    p.file = filename;
+    if (fileSrc.matchFirst("(\n|^)@book\\s*?(\n|$)")) {
+        isBook = true;
+        p = parseProgram(p, fileSrc);
+        if (p.chapters.length == 0) {
+            error(filename, 1, "This book has no chapters");
+            return;
+        }
+    } else {
+        Chapter c = new Chapter();
+        c.file = filename;
+        c.majorNum = 1; c.minorNum = 0;
+
+        c = parseChapter(c, fileSrc);
+        p.chapters ~= c;
+    }
+
+    if (!weaveOnly) {
+        tangle(p);
+    }
+
+    if (!tangleOnly) {
+        weave(p);
+    }
+
+    if (!noCompCmd &amp;&amp; !tangleErrors &amp;&amp; !weaveOnly) {
+<b><span class="nocode pln">        <a class='nocode pln' style='text-decoration:none' href="main.html#1:4:1"><font color=maroon>&#9654;</font> 1<font color=crimson>.</font> <span class=code_title>Check for compiler errors</span></span></b></a>
+    }
+}
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="main.html#1:1:1"><code>main.d @ 1.1.1</code></a></li></ol></blockquote>
+</div>
+</div>
+<a name="1:4"><div class="section"><h4>4. Compiler errors</h4></a>
+<p>Here we check for compiler errors.
+</p>
+<p>First we have to get all the codeblocks so that we can backtrack the line numbers
+from the error message to the correct codeblock. Then we can use the <code>getLinenums</code>
+function to get the line numbers for each line in the tangled code.
+</p>
+
+<br><a name='1:4:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Check for compiler errors</span></h4><hr></center>
+<pre class="code_background prettyprint lang-d">
+Line[][string] codeLinenums;
+
+Block[string] rootCodeblocks;
+Block[string] codeblocks;
+getCodeblocks(p, codeblocks, rootCodeblocks);
+
+foreach (b; rootCodeblocks) {
+    codeLinenums = getLinenums(codeblocks, b.name, b.name, codeLinenums);
+}
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  style='text-decoration:none' href="main.html#1:4:2"><code>Check for compiler errors @ 1.4.2</code></a></li><li><a  style='text-decoration:none' href="main.html#1:4:3"><code>Check for compiler errors @ 1.4.3</code></a></li><li><a  style='text-decoration:none' href="main.html#1:4:4"><code>Check for compiler errors @ 1.4.4</code></a></li></ol></blockquote>
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="main.html#1:3:2"><code>lit function @ 1.3.2</code></a></li></ol></blockquote>
+</div>
+<p>Now we go and check for the <code>@compiler</code> command and the <code>@error_format</code> command.
+</p>
+
+<br><a name='1:4:2'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4><a style='text-decoration:none;color:blue;font-family:Monaco,"Lucida Console",monospace' href="main.html#1:4:1"><span class=code_title>Check for compiler errors</span> <font color=#008000>+=</font></a></h4><hr></center>
+<pre class="code_background prettyprint lang-d">
+string compilerCmd;
+string errorFormat;
+Command errorFormatCmd;
+foreach (cmd; p.commands) {
+    if (cmd.name == "@compiler") {
+        compilerCmd = cmd.args;
+    } else if (cmd.name == "@error_format") {
+        errorFormat = cmd.args;
+        errorFormatCmd = cmd;
+    }
+}
+if (p.chapters.length == 1) {
+    Chapter c = p.chapters[0];
+    foreach (cmd; c.commands) {
+        if (cmd.name == "@compiler") {
+            compilerCmd = cmd.args;
+        } else if (cmd.name == "@error_format") {
+            errorFormat = cmd.args;
+            errorFormatCmd = cmd;
+        }
+    }
+}
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  style='text-decoration:none' href="main.html#1:4:2"><code>Check for compiler errors @ 1.4.2<font color=red> (this block)</font></code></a></li><li><a  style='text-decoration:none' href="main.html#1:4:3"><code>Check for compiler errors @ 1.4.3</code></a></li><li><a  style='text-decoration:none' href="main.html#1:4:4"><code>Check for compiler errors @ 1.4.4</code></a></li></ol></blockquote>
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="main.html#1:3:2"><code>lit function @ 1.3.2</code></a></li></ol></blockquote>
+</div>
+<p>If there is no <code>@error_format</code> but the <code>@compiler</code> command uses a known compiler, we
+can substitute the error format in.
+</p>
+<p>Supported compilers/linters are:
+</p>
+<ul>
+<li><code>clang</code>
+</li>
+<li><code>gcc</code>
+</li>
+<li><code>g++</code>
+</li>
+<li><code>javac</code>
+</li>
+<li><code>pyflakes</code>
+</li>
+<li><code>jshint</code>
+</li>
+<li><code>dmd</code>
+</li>
+</ul>
+
+<br><a name='1:4:3'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4><a style='text-decoration:none;color:blue;font-family:Monaco,"Lucida Console",monospace' href="main.html#1:4:1"><span class=code_title>Check for compiler errors</span> <font color=#008000>+=</font></a></h4><hr></center>
+<pre class="code_background prettyprint lang-d">
+if (errorFormat is null) {
+    if (compilerCmd.indexOf("clang") != -1) { errorFormat = "%f:%l:%s: %s: %m"; }
+    else if (compilerCmd.indexOf("gcc") != -1) { errorFormat = "%f:%l:%s: %s: %m"; }
+    else if (compilerCmd.indexOf("g++") != -1) { errorFormat = "%f:%l:%s: %s: %m"; }
+    else if (compilerCmd.indexOf("javac") != -1) { errorFormat = "%f:%l: %s: %m"; }
+    else if (compilerCmd.indexOf("pyflakes") != -1) { errorFormat = "%f:%l:(%s:)? %m"; }
+    else if (compilerCmd.indexOf("jshint") != -1) { errorFormat = "%f: line %l,%s, %m"; }
+    else if (compilerCmd.indexOf("dmd") != -1) { errorFormat = "%f\\(%l\\):%s: %m"; }
+    else if (compilerCmd.indexOf("cargo") != -1) { errorFormat = "%s --&gt; %f:%l:%m%s"; }
+    else if (compilerCmd.indexOf("rustc") != -1) { errorFormat = "%s --&gt; %f:%l:%m%s"; }
+}
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  style='text-decoration:none' href="main.html#1:4:2"><code>Check for compiler errors @ 1.4.2</code></a></li><li><a  style='text-decoration:none' href="main.html#1:4:3"><code>Check for compiler errors @ 1.4.3<font color=red> (this block)</font></code></a></li><li><a  style='text-decoration:none' href="main.html#1:4:4"><code>Check for compiler errors @ 1.4.4</code></a></li></ol></blockquote>
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="main.html#1:3:2"><code>lit function @ 1.3.2</code></a></li></ol></blockquote>
+</div>
+<p>Now we actually go through and create the regex, by replacing the <code>%l</code>, <code>%f</code>, and <code>%m</code> with
+matched regular expressions. Then we execute the shell command, parse each error
+using the error format, and rewrite the error with the proper filename and line number
+given by the array <code>codeLinenums</code> that we created earlier.
+</p>
+
+<br><a name='1:4:4'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4><a style='text-decoration:none;color:blue;font-family:Monaco,"Lucida Console",monospace' href="main.html#1:4:1"><span class=code_title>Check for compiler errors</span> <font color=#008000>+=</font></a></h4><hr></center>
+<pre class="code_background prettyprint lang-d">
+if (errorFormat !is null) {
+    auto r = regex("");
+    try {
+        r = regex("^" ~ errorFormat.replaceAll(regex("%s"), ".*?")
+                                               .replaceAll(regex("%l"), "(?P&lt;linenum&gt;\\d+?)")
+                                               .replaceAll(regex("%f"), "(?P&lt;filename&gt;.*?)")
+                                               .replaceAll(regex("%m"), "(?P&lt;message&gt;.*?)") ~ "$");
+    } catch (Exception e) {
+        error(errorFormatCmd.filename, errorFormatCmd.lineNum, "Regular expression error: " ~ e.msg);
+        return;
+    }
+ 
+    writeln(compilerCmd);
+    auto output = executeShell(compilerCmd).output.split("\n");
+    int i = 0;
+ 
+    foreach (line; output) {
+        auto matches = matchFirst(line, r);
+ 
+        string linenum = matches.canFind("linenum") ? matches["linenum"] : "";
+        string fname = matches.canFind("filename") ? matches["filename"] : "";
+        string message = matches.canFind("message") ? matches["message"] : "";
+ 
+        if (matches &amp;&amp; linenum != "" &amp;&amp; fname != "") {
+            if (codeLinenums[fname].length &gt; to!int(linenum)) {
+                auto codeline = codeLinenums[fname][to!int(linenum) - 1];
+                error(codeline.file, codeline.lineNum, message);
+            } else {
+                auto codeline = codeLinenums[fname][codeLinenums[fname].length - 2];
+                error(codeline.file, codeline.lineNum, message);
+            }
+        } else {
+            if (!(line == "" &amp;&amp; i == output.length - 1)) {
+                writeln(line);
+            }
+        }
+        i++;
+    }
+}
+</pre></div>
+<blockquote style='border-left:10px solid #A7C7E7'>Added to in:<ol><li><a  style='text-decoration:none' href="main.html#1:4:2"><code>Check for compiler errors @ 1.4.2</code></a></li><li><a  style='text-decoration:none' href="main.html#1:4:3"><code>Check for compiler errors @ 1.4.3</code></a></li><li><a  style='text-decoration:none' href="main.html#1:4:4"><code>Check for compiler errors @ 1.4.4<font color=red> (this block)</font></code></a></li></ol></blockquote>
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="main.html#1:3:2"><code>lit function @ 1.3.2</code></a></li></ol></blockquote>
+</div>
+</div>
+<a name="1:5"><div class="section"><h4>5. GetLinenums</h4></a>
+<p>Here is the <code>getLinenums</code> function. It just goes through every block like tangle would,
+but for each line it adds the line to the array, storing the file and
+line number for that line.
+</p>
+
+<br><a name='1:5:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>getLinenums function</span></h4><hr></center>
+<pre class="code_background prettyprint lang-d">
+Line[][string] getLinenums(Block[string] codeblocks, string blockName, 
+                 string rootName, Line[][string] codeLinenums) {
+    Block block = codeblocks[blockName];
+
+    if (block.commentString != "") {
+        codeLinenums[rootName] ~= new Line("comment", "", 0);
+    }
+
+    foreach (lineObj; block.lines) {
+        string line = lineObj.text;
+        string stripLine = strip(line);
+        if (stripLine.startsWith("@{") &amp;&amp; stripLine.endsWith("}")) {
+            auto index = stripLine.length - 1;
+            auto newBlockName = stripLine[2..index];
+
+            if (isBook)
+            {
+		string [] sb = newBlockName.split("/");
+		if (sb.length &lt; 2)
+			newBlockName = block.namespace ~ " / " ~ newBlockName;
+            }
+            getLinenums(codeblocks, newBlockName, rootName, codeLinenums);
+
+        } else {
+            codeLinenums[rootName] ~= lineObj;
+        }
+    }
+    codeLinenums[rootName] ~= new Line("", "", 0);
+
+    return codeLinenums;
+}
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="main.html#1:1:1"><code>main.d @ 1.1.1</code></a></li></ol></blockquote>
+</div>
+<p>Finally, we also have to add the imports.
+</p>
+
+<br><a name='1:5:2'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Imports</span></h4><hr></center>
+<pre class="code_background prettyprint lang-d">
+import parser;
+import tangler;
+import weaver;
+import util;
+import globals;
+import std.stdio;
+import std.file;
+import std.string;
+import std.process;
+import std.regex;
+import std.algorithm: canFind;
+import std.conv;
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  style='text-decoration:none' href="main.html#1:1:1"><code>main.d @ 1.1.1</code></a></li></ol></blockquote>
+</div>
+
+</div>
+<div class=section><a name=callgraph><h4>6. Appendix : Call graph</h4></a><div id=unused_graph></div><div id=used_graph></div><br><script language=javascript>const options = {format:'svg'};const used_data = `digraph "Main" {
+subgraph cluster_0 {
+label="— Used blocks —";
+"main.d" [color=green3 shape=note];
+"globals.d" [color=green3 shape=note];
+"main.d" -> "lit function" [label=" 1"];
+"globals.d" -> "Modifiers" [label=" 1"];
+"globals.d" -> "Globals" [label=" 1"];
+"lit function" -> "Check for compiler errors" [label=" 1"];
+"main.d" -> "Parse the arguments" [label=" 1"];
+"main.d" -> "Run Literate" [label=" 1"];
+"main.d" -> "Imports" [label=" 1"];
+"main.d" -> "getLinenums function" [label=" 1"];
+}
+}`;document.getElementById('used_graph').innerHTML = Viz(used_data,options);</script></div></body>

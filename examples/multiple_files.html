@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>5. Multiple Files</title>
+<script src=lit.js></script><link rel='stylesheet' href=lit.css><script src='https://cdnjs.cloudflare.com/ajax/libs/viz.js/1.8.0/viz-lite.js' integrity='sha384-Y3b3bsRCJjOlZTzayFzYDC2EWb8aWeRTquEpyeAgOiq2edmwWLgjwrxqEuqj/OGw' crossorigin='anonymous'></script><script src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.13.4/mermaid.min.js' integrity='sha384-5hHNvPeMrNH14oM3IcQofDoBhiclNK3g2+hnEinKzQ07C4AliMeVpnvxuiwEGpaO' crossorigin='anonymous'></script></head>
+<body onload="prettyPrint()">
+<div class=noprint style='position:fixed; padding:5px 0 0 5px;left:0;top:0'><a  style="float:left;text-decoration:none" class="chapter-nav" href="hangman.html"><h1 style='color:black'>&#9664;</h1></a><a  style="float:right;text-decoration:none" class="chapter-nav" href="test.html"><h1 style='color:black'>&#9654;</h1></a><center><a class='chapter-nav'><h1 style='cursor:pointer' onclick="window.location='index.html'">&equiv;</h1></a></center></div><section>
+<h1>5. Multiple Files</h1>
+<a name="5:1"><div class="section"><h4>1. Showcase</h4></a>
+<p>This is an example which showcases how to generate multiple files from one literate source
+file. Any codeblock with an extension is considered to be a file, and will be generated when
+literate is run.
+</p>
+
+<br><a name='5:1:1'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>Reused Code</span></h4><hr></center>
+<pre class="code_background prettyprint">
+for i in range(0,100):
+	for j in range(0,100):
+		print("Hello")
+</pre></div>
+
+
+<blockquote style='border-left:10px solid #90C796'>Used in:<ol><li><a  target=_blank  style='text-decoration:none' href="hangman.html#4:1:1"><code><font color=#28B463>Hangman</font> <font color=#34495E>/</font> hangman.py @ 4.1.1</code></a></li></ol></blockquote>
+</div>
+
+<br><a name='5:1:2'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title><strong class=code_title>example_file.txt</strong></span></h4><hr></center>
+<pre class="code_background prettyprint">
+This is an example text file
+</pre></div>
+
+
+
+</div>
+<p>Any number of files can be made with any extensions
+</p>
+
+<br><a name='5:1:3'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title><strong class=code_title>hello.py</strong></span></h4><hr></center>
+<pre class="code_background prettyprint">
+print "hello world"
+</pre></div>
+
+
+
+</div>
+<p>If you want to create a file that has no extension, you can put it in quotes.
+</p>
+
+<br><a name='5:1:4'></a><div class="codeblock">
+<div class=code_background style='border:1px solid black'><center><h4 style='font-family:Monaco,"Lucida Console",monospace'><span class=code_title>"SomeFile"</span></h4><hr></center>
+<pre class="code_background prettyprint">
+This file is still generated even though it has no extension
+</pre></div>
+
+
+
+</div>
+
+</div>
+</body>

@@ -1,0 +1,21 @@
+[DOCUMENT]
+TITLE: Other Security Requirements 
+
+[REQUIREMENT]
+UID: SOREQ-001 
+TITLE: Show word count 
+STATEMENT: There should be a wc.c file 
+
+[REQUIREMENT]
+UID: SOREQ-002
+REFS:
+- TYPE: File
+  VALUE: file.py
+TITLE: Traceability 
+STATEMENT: This requirement references the file.py file.
+COMMENT: >>>
+If the file.py contains a source range that is connected back to this
+requirement (REQ-002), the link becomes a link to the source range.
+<<<
+
+
