@@ -335,6 +335,23 @@ body {min-width: 200px;max-width: 850px;margin: 3rem auto;padding: 0 2rem;font-s
 
 <script src='https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.13.4/mermaid.min.js' integrity='sha384-5hHNvPeMrNH14oM3IcQofDoBhiclNK3g2+hnEinKzQ07C4AliMeVpnvxuiwEGpaO' crossorigin='anonymous'></script>
 
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js" integrity='sha384-Ea61bX+j7CsDkK7OeilgyifiIUZN8IZfX7bCptPalE7sngvFcETzE+ialOPcqvOW' crossorigin='anonymous'></script>
+
+<script>
+	function addDarkmodeWidget()
+	{
+		const options = {
+			time		: '0.0s',
+			saveInCookies	: false,
+			label		: '🌓', // default: ''
+			autoMatchOsTheme: true // default: true
+		};
+
+		new Darkmode(options).showWidget();
+	}
+	window.addEventListener('load', addDarkmodeWidget);
+</script>
+
 </head>
 <body>
 <div class="container">
@@ -884,7 +901,7 @@ DELIMITER";
                                     b_inside_mermaid = true;
                                     l = "<center><font color=white><div class=mermaid>";
                            }
-                           else if (sl == "```")
+                           else if (sl.startsWith("```"))
                            {
                                     if (b_inside_mermaid == true)
                                     {
