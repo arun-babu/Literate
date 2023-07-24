@@ -142,7 +142,13 @@ void writeCode(Block[string] codeblocks, string blockName, File file, string fil
                         file.writeln(block.commentString.replace("%s", to!string(lineObj.lineNum)));
                     }
                 }
-                file.writeln(whitespace ~ line);
+
+		string wl = (whitespace ~ line).strip();
+	
+		if (wl.length == 0)
+        		file.writeln();
+		else
+                	file.writeln(whitespace ~ line);
             }
         }
     }

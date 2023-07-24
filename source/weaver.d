@@ -306,7 +306,7 @@ void weave(Program p) {
                     mkdir(dir);
             }
     
-            File f = File(dir ~ "/" ~ stripExtension(baseName(c.file)) ~ ".html", "w");
+            File f = File(dir ~ "/docs/" ~ stripExtension(baseName(c.file)) ~ ".html", "w");
             f.write(output);
             f.close();
         }
@@ -315,12 +315,12 @@ void weave(Program p) {
     if (isBook && !noOutput) {
 // Create the table of contents
 
-File index = File(outDir ~ "/index.html", "w");
+File index = File(outDir ~ "/docs/index.html", "w");
 index.writeln("<script>window.location='" ~ p.title ~ ".html';</script>");
 index.close();
 
 string dir = outDir;
-File f = File(dir ~ "/" ~ p.title ~ ".html", "w");
+File f = File(dir ~ "/docs/" ~ p.title ~ ".html", "w");
 f.writeln(
 q"DELIMITER
 <!DOCTYPE html>
@@ -729,11 +729,11 @@ DELIMITER";
     	}
     }
     
-    File js = File(dir ~ "/" ~ "lit.js", "w");
+    File js = File(dir ~ "/docs/" ~ "lit.js", "w");
     js.write(prettify ~ "\n" ~ prettifyExtension);
     js.close();
     
-    File css_file = File(dir ~ "/" ~ "lit.css", "w");
+    File css_file = File(dir ~ "/docs/" ~ "lit.css", "w");
     css_file.write(css);
     css_file.close();
     
