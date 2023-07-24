@@ -1055,7 +1055,7 @@ if (defLocations[block_name] != "noWeave") {
     }
     else {
 	foreach (ch; p.chapters) {
-		if (ch.num() == chapter || chapter.startsWith(ch.num() ~ "."))
+		if (ch.num() == chapter)
 		{
 			string old_title = title ~ "";
         		title = "<font color=#28B463>" ~ ch.title ~ "</font> <font color=#34495E>/</font> ";
@@ -1179,8 +1179,12 @@ string linkLocations(string text, string[][string] sectionLocations, Program p, 
 
 		locName ~= " @ " ~ locNameRef;
 
-                if (c.num() != chapter && target_blank != "" && (dots.length > 1 || slashes.length > 2)) {
-                        locName = "<font color=#28B463>" ~ title_name[chapter] ~ "</font> <font color=#34495E>/</font> " ~ locName;
+                if (c.num() != chapter && target_blank != "") {
+
+			if (dots.length > 1 || slashes.length > 2) // a file
+                        	locName = locName;
+			else
+                        	locName = "<font color=#28B463>" ~ title_name[chapter] ~ "</font> <font color=#34495E>/</font> " ~ locName;
                 }
 
                 // if a "file" is in the same chapter - don't do target=_blank 
